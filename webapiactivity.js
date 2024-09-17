@@ -125,4 +125,4 @@ document.addEventListener("DOMContentLoaded", function() {
        Some possibilities: if using Visual Code, use Live Server extension; if Brackets,
        use built-in Live Preview.
     */
-});
+};
