@@ -3,7 +3,69 @@
 document.addEventListener("DOMContentLoaded", function() {
 
 	
-	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
+	const baseURL = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
+
+   document.getElementById('playlist').addEventListener('change', async function(){
+      const plat = this.value;
+      if (play === "0") return;
+
+      try{
+         const response = await fetch('${baseURL?name=${play}');
+         consta platData = await response.json();
+
+         populateActs(platData.acts);
+         populatePlayDetails(playData.acts[0]);
+
+      } catch (error) {
+         console.error(error)('error fetching play data: ', error);
+
+      }
+   });
+
+   function populateActs(acts){
+      const actList = document.getElementById('actList');
+      actList.innerHTML = '';
+      acts.forEach((act, index) => {
+         const option = document.createElement('option');
+         option.value = index;
+         option.textContent = act.title;
+         actList.appendChild(option);
+      });
+
+      actList.addEventListener('change', function(){
+         const selectedAct = acts[this.value];
+         populateScenes(selectedAct.scenes);
+         populatePlayers(selectedAct.players);
+
+      });
+
+   }
+
+   function populateScenes(scenes){
+      const sceneList = document.getElementById('sceneList');
+      sceneList.innerHTML = '';  
+      scenes.forEach((scene, index) => {
+         const option = document.createElement('option');
+         option.value = index;
+         option.textContent = scene.title;
+         sceneList.appendChild(option);
+      });
+
+      sceneList.addEventListener('change', function(){
+         const selectedScene = scenes[this.value];
+         populateSceneDetails(selectedScene);
+      });
+   }
+
+   function populatePlayers(players){
+      const playerList = document.getElementById('playerList');
+      playerList.innerHTML = '<option value="0">All player</option>';
+      players.forEach(player => {
+         const option = document.createElement('li');
+         option.textContent = player;
+         playerList.appendChild(li);
+      });
+   }
 
    /*
      To get a specific play, add play name via query string, 
