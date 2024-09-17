@@ -1,19 +1,16 @@
-
-
 document.addEventListener("DOMContentLoaded", function() {
-
 	
 	const baseURL = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
 
    document.getElementById('playlist').addEventListener('change', async function(){
-      const plat = this.value;
+      const play = this.value;
       if (play === "0") return;
 
       try{
          const response = await fetch('${baseURL?name=${play}');
-         const platData = await response.json();
+         const playData = await response.json();
 
-         populateActs(platData.acts);
+         populateActs(playData.acts);
          populatePlayDetails(playData.acts[0]);
 
       } catch (error) {
@@ -51,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       sceneList.addEventListener('change', function(){
          const selectedScene = scenes[this.value];
-         populateSceneDetails(selectedScene);
+         populatePlayDetails(selectedScene);
       });
    }
 
