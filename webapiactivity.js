@@ -61,11 +61,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const playerList = document.getElementById('playerList');
       playerList.innerHTML = '<option value="0">All player</option>';
       players.forEach(player => {
-         const option = document.createElement('li');
+         const option = document.createElement('option');
+         option.value = player;
          option.textContent = player;
-         playerList.appendChild(li);
-      });
-   }
+     
 
    /*
      To get a specific play, add play name via query string, 
