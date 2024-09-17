@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       try{
          const response = await fetch('${baseURL?name=${play}');
-         consta platData = await response.json();
+         const platData = await response.json();
 
          populateActs(platData.acts);
          populatePlayDetails(playData.acts[0]);
@@ -38,8 +38,6 @@ document.addEventListener("DOMContentLoaded", function() {
          populatePlayers(selectedAct.players);
 
       });
-
-   }
 
    function populateScenes(scenes){
       const sceneList = document.getElementById('sceneList');
@@ -81,7 +79,34 @@ document.addEventListener("DOMContentLoaded", function() {
       sceneDescription.textContent = scene.description;
       sceneDescription.className = 'direction';
       sceneDiv.appendChild(sceneDescription);
+
+      scene.speeches.forEach(speech => {
+         const speechDiv = document.createElement('div');
+         speechDiv.className = 'speech';
+         
+
+         const speaker = document.createElement('span');
+         speaker.textContent = speech.speaker;
+         speechDiv.appendChild(speaker);
+
+         speech.lines.forEach(line => {
+            const speechText = document.createElement('p');
+            speechText.textContent = line;
+            speechDiv.appendChild(speechText);
+         });
+      
+         sceneDiv.appendChild(speechDiv);
       });
+   }
+
+   function populatePlayDetails(firstAct) {
+      const playSection = document.getElementById('playHere');
+      const actArticle = document.createElement('actHere');
+      const sceneDiv = document.createElement('sceneHere');
+
+      playSection.querySelector('h2').textContent = firstAct.playtitle;
+      actArticle.querySelector('h3').textContent = 'Act: ${firstAct.name}';
+      updateSceneDetails(firstAct.scenes[0]);
    }
      
 
