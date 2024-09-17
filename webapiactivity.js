@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const sceneDiv = document.getElementById('sceneDetails');
       sceneDetails.innerHTML = '';
       
-      const sceneTitle = document.createElement('h2');
+      const sceneTitle = document.createElement('h4');
       sceneTitle.textContent = scene.title;
       sceneDiv.appendChild(sceneTitle);
 
