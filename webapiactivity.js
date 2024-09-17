@@ -1,6 +1,25 @@
 
 
 document.addEventListener("DOMContentLoaded", function() {
+   const playlist = document.getElementById('playList');
+   
+   playlist.addEventListener('click', (e)=>{
+      fetch(url+ `?name=${e.target.value}`)
+         .then(console.log("hi"))
+         .then(play = JSON.parse(e.target.value))
+         .then(play=>{
+            const acts = [];
+            play.forEach( element => {
+               acts = element.acts;
+            } )
+            acts.forEach(act => {
+               const option = document.createElement('option');
+               option.value = 
+            });
+       })
+
+        });
+   });
 
 	
 	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
@@ -20,4 +39,4 @@ document.addEventListener("DOMContentLoaded", function() {
        Some possibilities: if using Visual Code, use Live Server extension; if Brackets,
        use built-in Live Preview.
     */
-});
+// });
