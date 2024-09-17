@@ -64,6 +64,25 @@ document.addEventListener("DOMContentLoaded", function() {
          const option = document.createElement('option');
          option.value = player;
          option.textContent = player;
+         playerList.appendChild(option);
+
+      });
+   }
+
+   function updateSceneDetails(scene){
+      const sceneDiv = document.getElementById('sceneDetails');
+      sceneDetails.innerHTML = '';
+      
+      const sceneTitle = document.createElement('h2');
+      sceneTitle.textContent = scene.title;
+      sceneDiv.appendChild(sceneTitle);
+
+      const sceneDescription = document.createElement('p');
+      sceneDescription.textContent = scene.description;
+      sceneDescription.className = 'direction';
+      sceneDiv.appendChild(sceneDescription);
+      });
+   }
      
 
    /*
