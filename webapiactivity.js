@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(acts);
             //console.log(scenes);
 
-            actList.innerHTML='';
+            actList.innerHTML= '';
             sceneList.innerHTML = '';
             
             acts.forEach(act => { //for each act...
@@ -29,13 +29,25 @@ document.addEventListener("DOMContentLoaded", function() {
                optionAct.value = act.name;
                optionAct.text = act.name;
                actList.appendChild(optionAct); 
-               act.scenes.forEach(scene=>{
-                  const optionScenes = document.createElement('option');
-                  optionScenes.value = scene.name;
-                  optionScenes.text = scene.name;
-                  sceneList.appendChild(optionScenes);
-               })
-               
+            
+            actList.addEventListener('change', (e) => {
+               // Find the selected act based on the act name
+               const selectedAct = acts.find(act => act.name === e.target.value);
+
+               // Clear previous scenes
+               sceneList.innerHTML = '';
+
+               // If an act is selected and it has scenes, populate the sceneList dropdown
+               if (selectedAct && selectedAct.scenes) {
+                     selectedAct.scenes.forEach(scene => {
+                        const optionScene = document.createElement('option');
+                        optionScene.value = scene.name;
+                        optionScene.text = scene.name;
+                        sceneList.appendChild(optionScene);
+                     });
+               }
+            });
+            
 
              
             });
