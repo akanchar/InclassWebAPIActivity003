@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", function() {
 
 	
@@ -20,4 +18,46 @@ document.addEventListener("DOMContentLoaded", function() {
        Some possibilities: if using Visual Code, use Live Server extension; if Brackets,
        use built-in Live Preview.
     */
-});
+
+       document.getElementById("playList").addEventListener("change", function() {
+         const playValue = this.value;
+     
+         // Don't do anything if the user hasn't selected a valid play
+         if (playValue === "0") return;
+     
+         // Fetch the selected play API
+         fetch(url+'?name='+playValue)
+             .then(response => response.json())
+             .then(data => {
+                 // Clear the existing act options in the actList dropdown
+                 const actList = document.getElementById("actList");
+                 actList.innerHTML = '';
+                 const sceneList = document.getElementById("sceneList");
+                 sceneList.innerHTML = '';
+     
+                 // Loop through the acts and populate the actList dropdown
+                 data.acts.forEach((act, index) => {
+                     const option = document.createElement("option");
+                     option.value = index;  // Option value set as index to access act later
+                     option.textContent = act.name;  // Display act name
+                     actList.appendChild(option);
+                 });
+                 console.log(data.acts[0])
+                 console.log(actList.value)
+                 actList.addEventListener("change", () => {
+                     sceneList.innerHTML = ""
+                     data.acts[actList.value].scenes.forEach((scene, index) => {
+                        const newOption = document.createElement("option");
+                        newOption.value = index;  // Option value set as index to access act later
+                        newOption.textContent = scene.name;  // Display act name
+                        sceneList.appendChild(newOption);
+                 });
+                 })
+             })
+             .catch(error => {
+                 console.error("Error fetching the play data:", error);
+             });
+     });
+   }  
+     
+);
