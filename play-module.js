@@ -1,33 +1,29 @@
+
 /* In this module, create three classes: Play, Act, and Scene. */
-class Play {
+export class Play {
     constructor(title, short, persona, acts){
         this.title = title;
         this.short = short;
-        this.persona = persona.map[person=> new Persona(person.position,person.player,person.desc)];
+        this.persona = persona.map(Person=> new Persona(Person.position,Person.player,Person.desc));
         this.acts = acts.map(act=> new Act(act.name, act.scenes));
+
     }
     startPlay(actList, sceneList){
-        if (this.acts.length>0){
-            actList.value = acts[0].name;
-            actTitle.innerHTML = acts[0].name;
-            sceneList.value = acts[0].scenes[0].name;
-            sceneTitle.innerHTML = acts[0].scenes[0].name;
-        }
-            actList.innerHTML= '';
-            sceneList.innerHTML = '';
+        actList.innerHTML= '';
+        sceneList.innerHTML = '';
 
-            const actInitial = document.createElement('option');
-            actInitial.value = "Select An Act";
-            actInitial.text = "Select An Act";
-            actList.appendChild(actInitial);
+        const actInitial = document.createElement('option');
+        actInitial.value = "Select An Act";
+        actInitial.text = "Select An Act";
+        actList.appendChild(actInitial);
 
-            const sceneInitial = document.createElement('option');
-            sceneInitial.value = "Select A Scene";
-            sceneInitial.text = "Select A Scene";
-            sceneList.appendChild(sceneInitial);
+        const sceneInitial = document.createElement('option');
+        sceneInitial.value = "Select A Scene";
+        sceneInitial.text = "Select A Scene";
+        sceneList.appendChild(sceneInitial);
 
-            this.acts.forEach(act => { //for each act...
-                actList.appendChild(act.actOption()); 
+        this.acts.forEach(act => { //for each act...
+            actList.appendChild(act.actOption()); 
     });
     }
 
@@ -35,10 +31,10 @@ class Play {
         return this.acts.find(act=>act.name===name);
     }
 }
-class Act {
+export class Act {
     constructor(name, scenes) {
         this.name = name;
-        this.scenes = scenes;
+        this.scenes = scenes.map(scene=> new Scene(scene.name,scene.title,scene.stageDirection, scene.speeches));
     }
     actOption(){
         const optionAct = document.createElement('option');
@@ -51,23 +47,37 @@ class Act {
         sceneList.innerHTML = '';
         this.scenes.forEach(scene => { //for each scene...
             sceneList.appendChild(scene.sceneOption()); 
-    })
-
+        })
+    }
+    getScene(name){
+        return this.scenes.find(scene=>scene.name===name);
+    }
 }
-}
 
-class Scene {
+
+export class Scene {
     constructor(name, title, stageDirection, speeches) {
         this.name = name;
         this.title = title;
         this.stageDirection = stageDirection;
-        this.speeches = speeches;
+        this.speeches = speeches.map(speech=>new Speech(speech.speaker, speech.lines));
     }
     sceneOption(){
         const optionScene = document.createElement('option');
         optionScene.value = this.name;
         optionScene.text = this.name;
         return optionScene;
+    }
+    speechFill(speechText){ //WIP
+        speechText.forEach(div=>{
+            div.remove();
+        })
+        this.speeches.forEach(a=>{
+            const divider = document.createElement('div');
+            divider.className = "speech";
+            divider.innerHTML = a.lines;
+            speechText.appendChild(divider);
+        })
     }
 
 }
@@ -77,5 +87,11 @@ class Persona{
         this.position = position;
         this.player = player;
         this.desc  = desc;
+    }
+}
+class Speech{
+    constructor(speaker, lines){
+        this.speaker = speaker;
+        this.lines = lines;
     }
 }
