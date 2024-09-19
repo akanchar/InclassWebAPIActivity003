@@ -1,4 +1,4 @@
-
+import {Play,Act,Scene} from './play-module.js';
 
 document.addEventListener("DOMContentLoaded", function() {
    const playlist = document.getElementById('playList');
@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
    var playTitle = document.querySelector('#playHere h2');
    var actTitle = document.querySelector('#actHere h3');
    var sceneTitle = document.querySelector('#sceneHere h4');
+   var speechText = document.querySelectorAll('#sceneHere .speech');
    
    playlist.addEventListener('change', (e)=>{
       fetch(url+ `?name=${e.target.value}`)
@@ -16,65 +17,45 @@ document.addEventListener("DOMContentLoaded", function() {
             playTitle.innerHTML = `${play.title}`;
             const playObj = new Play(play.title, play.short, play.persona, play.acts);
             //console.log(play);
-            Play.startPlay(actList,sceneList);
-            if (acts.length>0){
-               actList.value = acts[0].name;
-               actTitle.innerHTML = acts[0].name;
-               sceneList.value = acts[0].scenes[0].name;
-               sceneTitle.innerHTML = acts[0].scenes[0].name;
+            if (playObj.acts.length>0){
+               actList.value = playObj.acts[0].name;
+               actTitle.innerHTML = playObj.acts[0].name;
+               sceneList.value = playObj.acts[0].scenes[0].name;
+               sceneTitle.innerHTML = playObj.acts[0].scenes[0].name;
+            playObj.startPlay(actList,sceneList);
             }
-
-            actList.innerHTML= '';
-            sceneList.innerHTML = '';
-
-            const actInitial = document.createElement('option');
-            actInitial.value = "Select An Act";
-            actInitial.text = "Select An Act";
-            actList.appendChild(actInitial);
-
-            const sceneInitial = document.createElement('option');
-            sceneInitial.value = "Select A Scene";
-            sceneInitial.text = "Select A Scene";
-            sceneList.appendChild(sceneInitial);
-         
-
-            acts.forEach(act => { //for each act...
-               const optionAct = document.createElement('option');
-               optionAct.value = act.name;
-               optionAct.text = act.name;
-               actList.appendChild(optionAct); 
-            
-         
             actList.addEventListener('change', (e) => {
-               actTitle.innerHTML = e.target.value;
+               sceneList.innerHTML = '';
                
                // Find the selected act based on the act name
-               const selectedAct = acts.find(act => act.name === e.target.value);
+               const selectedAct = playObj.getAct(e.target.value);
+               actTitle.innerHTML = selectedAct.name;
                sceneTitle.innerHTML = selectedAct.scenes[0].name;
 
-               // Clear previous scenes
-               sceneList.innerHTML = '';
-
                // If an act is selected and it has scenes, populate the sceneList dropdown
-               if (selectedAct && selectedAct.scenes) {
-                     selectedAct.scenes.forEach(scene => {
-                        const optionScene = document.createElement('option');
-                        optionScene.value = scene.name;
-                        optionScene.text = scene.name;
-                        sceneList.appendChild(optionScene);
-                     });   
+               if (selectedAct) {
+                     selectedAct.sceneOptionList(sceneList);
+                     sceneTitle.innerHTML = selectedAct.scenes[0].name;
+                     
                }
             
-            });
+            
             sceneList.addEventListener('change', (e)=>{
-               sceneTitle.innerHTML = e.target.value;
-            })
+               if(selectedAct){
+                  const selectedScene = selectedAct.getScene(e.target.value);
+                  sceneTitle.innerHTML = selectedScene.name;
+                  selectedScene.speechFill(speechText);
+               }
+               
             });
+         });
+            
             
        })
 
         });
-   });
+      });
+
 
 	
 	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
