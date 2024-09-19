@@ -38,6 +38,22 @@ document.addEventListener("DOMContentLoaded", function() {
 				});
 		}
 	});
+
+	function displayScene(scene) {
+		actHere.innerHTML = `<h3>${scene.title}</h3>`;
+		sceneHere.innerHTML = '';
+		scene.speeches.forEach(speech => {
+			const speechDiv = document.createElement('div');
+			speechDiv.classList.add('speech');
+			speechDiv.innerHTML = `<span>${speech.speaker}</span>`;
+			speech.lines.forEach(line => {
+				const p = document.createElement('p');
+				p.textContent = line;
+				speechDiv.appendChild(p);
+			});
+			sceneHere.appendChild(speechDiv);
+		});
+	}
 });
 
 	/*
