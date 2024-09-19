@@ -5,13 +5,16 @@ document.addEventListener("DOMContentLoaded", function() {
 	const playHere = document.getElementById('playHere');
 	const actHere = document.getElementById('actHere');
 	const sceneHere = document.getElementById('sceneHere');
-	
-	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
+
+	let url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
 
 	playList.addEventListener('change', function() {
 		const playId = playList.value;
 		if (playId !== '0') {
-			fetch(url + '?name=' + playId)
+			// Append the play name dynamically to the url
+			url = `${url}?name=${playId}`;
+
+			fetch(url)
 				.then(response => response.json())
 				.then(data => {
 					actList.innerHTML = '';
