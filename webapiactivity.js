@@ -4,35 +4,56 @@ document.addEventListener("DOMContentLoaded", function() {
    const playlist = document.getElementById('playList');
    const actList = document.getElementById('actList');
    const sceneList =document.getElementById('sceneList');
-   
+   var playTitle = document.querySelector('#playHere h2');
+   var actTitle = document.querySelector('#actHere h3');
+   var sceneTitle = document.querySelector('#sceneHere h4');
    
    playlist.addEventListener('change', (e)=>{
       fetch(url+ `?name=${e.target.value}`)
          .then(console.log("hi"))
          .then(response => response.json())
          .then(play=> {
+            playTitle.innerHTML = `${play.title}`;
             console.log(play);
             const acts = [];
 
             play.acts.forEach(element => { //for each play, puts the acts into an array 
                acts.push(element);
-               //scenes.push(element.scenes);
+
             } )
             console.log(acts);
-            //console.log(scenes);
+            if (acts.length>0){
+               actList.value = acts[0].name;
+               actTitle.innerHTML = acts[0].name;
+               sceneList.value = acts[0].scenes[0].name;
+               sceneTitle.innerHTML = acts[0].scenes[0].name;
+            }
 
             actList.innerHTML= '';
             sceneList.innerHTML = '';
-            
+            const optionInitial = document.createElement('option');
+            optionInitial.value = "Act Name";
+            optionInitial.text = "Select An Act";
+            actList.appendChild(optionInitial);
+
             acts.forEach(act => { //for each act...
                const optionAct = document.createElement('option');
                optionAct.value = act.name;
                optionAct.text = act.name;
                actList.appendChild(optionAct); 
             
+            /* acts[0].scenes.forEach(s=>{
+               const option = document.createElement('option');
+               option.value = s.name;
+               option.text = s.name;
+               sceneList.appendChild(option);
+            }) */
             actList.addEventListener('change', (e) => {
+               actTitle.innerHTML = e.target.value;
+               
                // Find the selected act based on the act name
                const selectedAct = acts.find(act => act.name === e.target.value);
+               sceneTitle.innerHTML = selectedAct.scenes[0].name;
 
                // Clear previous scenes
                sceneList.innerHTML = '';
@@ -44,12 +65,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         optionScene.value = scene.name;
                         optionScene.text = scene.name;
                         sceneList.appendChild(optionScene);
-                     });
+                     });   
                }
-            });
             
-
-             
+            });
+            sceneList.addEventListener('change', (e)=>{
+               sceneTitle.innerHTML = e.target.value;
+            })
             });
             
        })
