@@ -14,15 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
          .then(response => response.json())
          .then(play=> {
             playTitle.innerHTML = `${play.title}`;
-            
+            const playObj = new Play(play.title, play.short, play.persona, play.acts);
             //console.log(play);
-            const acts = [];
-
-            play.acts.forEach(element => { //for each play, puts the acts into an array 
-               acts.push(element);
-
-            } )
-            console.log(acts);
+            Play.startPlay(actList,sceneList);
             if (acts.length>0){
                actList.value = acts[0].name;
                actTitle.innerHTML = acts[0].name;
