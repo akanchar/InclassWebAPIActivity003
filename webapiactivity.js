@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
          .then(response => response.json())
          .then(play=> {
             playTitle.innerHTML = `${play.title}`;
-            console.log(play);
+            
+            //console.log(play);
             const acts = [];
 
             play.acts.forEach(element => { //for each play, puts the acts into an array 
@@ -31,10 +32,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
             actList.innerHTML= '';
             sceneList.innerHTML = '';
-            const optionInitial = document.createElement('option');
-            optionInitial.value = "Act Name";
-            optionInitial.text = "Select An Act";
-            actList.appendChild(optionInitial);
+
+            const actInitial = document.createElement('option');
+            actInitial.value = "Select An Act";
+            actInitial.text = "Select An Act";
+            actList.appendChild(actInitial);
+
+            const sceneInitial = document.createElement('option');
+            sceneInitial.value = "Select A Scene";
+            sceneInitial.text = "Select A Scene";
+            sceneList.appendChild(sceneInitial);
+         
 
             acts.forEach(act => { //for each act...
                const optionAct = document.createElement('option');
@@ -42,12 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
                optionAct.text = act.name;
                actList.appendChild(optionAct); 
             
-            /* acts[0].scenes.forEach(s=>{
-               const option = document.createElement('option');
-               option.value = s.name;
-               option.text = s.name;
-               sceneList.appendChild(option);
-            }) */
+         
             actList.addEventListener('change', (e) => {
                actTitle.innerHTML = e.target.value;
                
