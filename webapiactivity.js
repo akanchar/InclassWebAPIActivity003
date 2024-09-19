@@ -2,20 +2,44 @@
 
 document.addEventListener("DOMContentLoaded", function() {
    const playlist = document.getElementById('playList');
+   const actList = document.getElementById('actList');
+   const sceneList =document.getElementById('sceneList');
    
-   playlist.addEventListener('click', (e)=>{
+   
+   playlist.addEventListener('change', (e)=>{
       fetch(url+ `?name=${e.target.value}`)
          .then(console.log("hi"))
-         .then(play = JSON.parse(e.target.value))
-         .then(play=>{
+         .then(response => response.json())
+         .then(play=> {
+            console.log(play);
             const acts = [];
-            play.forEach( element => {
-               acts = element.acts;
+
+            play.acts.forEach(element => { //for each play, puts the acts into an array 
+               acts.push(element);
+               //scenes.push(element.scenes);
             } )
-            acts.forEach(act => {
-               const option = document.createElement('option');
-               option.value = 
+            console.log(acts);
+            //console.log(scenes);
+
+            actList.innerHTML='';
+            sceneList.innerHTML = '';
+            
+            acts.forEach(act => { //for each act...
+               const optionAct = document.createElement('option');
+               optionAct.value = act.name;
+               optionAct.text = act.name;
+               actList.appendChild(optionAct); 
+               act.scenes.forEach(scene=>{
+                  const optionScenes = document.createElement('option');
+                  optionScenes.value = scene.name;
+                  optionScenes.text = scene.name;
+                  sceneList.appendChild(optionScenes);
+               })
+               
+
+             
             });
+            
        })
 
         });
