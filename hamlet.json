@@ -1,4 +1,3 @@
-const hamlet = `
    { 
       "title": "The Tragedy of Hamlet, Prince of Denmark",
       "short": "Hamlet",
@@ -2676,4 +2675,3 @@ const hamlet = `
         }       
        ]
    }
-`;
