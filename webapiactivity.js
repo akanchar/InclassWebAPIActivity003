@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
                  actList.innerHTML = '';
                  const sceneList = document.getElementById("sceneList");
                  sceneList.innerHTML = '';
+                 const playerList = document.getElementById("playerList");
+                 sceneList.innerHTML = '';
      
                  // Loop through the acts and populate the actList dropdown
                  data.acts.forEach((act, index) => {
@@ -52,6 +54,16 @@ document.addEventListener("DOMContentLoaded", function() {
                         newOption.textContent = scene.name;  // Display act name
                         sceneList.appendChild(newOption);
                  });
+                 sceneList.addEventListener("change", () => {
+                  playerList.innerHTML = ""
+                  data.persona.forEach((player, index) => {
+                    const option = document.createElement("option");
+                    option.value = index;  // Option value set as index to access player later
+                    option.textContent = player.player;  // Display player name
+                    playerList.appendChild(option);
+              });
+            })
+                   
                  })
              })
              .catch(error => {
