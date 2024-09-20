@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
                const selectedAct = playObj.getAct(e.target.value);
                actTitle.innerHTML = selectedAct.name;
                sceneTitle.innerHTML = selectedAct.scenes[0].name;
-
+               const selectedScene = selectedAct.getScene(selectedAct.scenes[0].name);
+               selectedScene.speechFill(speechText,sceneHere);
                // If an act is selected and it has scenes, populate the sceneList dropdown
                if (selectedAct) {
                      selectedAct.sceneOptionList(sceneList);
@@ -47,8 +48,6 @@ document.addEventListener("DOMContentLoaded", function() {
                if(selectedAct){
                   const selectedScene = selectedAct.getScene(e.target.value);
                   sceneTitle.innerHTML = selectedScene.name;
-
-
                   selectedScene.speechFill(speechText, sceneHere);
 
                }

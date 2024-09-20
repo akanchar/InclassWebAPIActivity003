@@ -70,13 +70,30 @@ export class Scene {
     }
     speechFill(speechText, sceneHere){ //WIP
         console.log(typeof(speechHere))
-        speechText.forEach(div=>{
-            div.remove();
-        })
+        sceneHere.innerHTML = '';
+        
+        const name = document.createElement('h4');
+        name.innerHTML = this.name;
+        sceneHere.appendChild(name);
+
+        const title = document.createElement('p');
+        title.className = "title";
+        title.innerHTML = this.title;
+        sceneHere.appendChild(title);
+
+        const direction = document.createElement('p');
+        direction.className = "direction";
+        direction.innerHTML = this.stageDirection;
+        sceneHere.appendChild(direction);
+
         this.speeches.forEach(a=>{
             const divider = document.createElement('div');
             divider.className = "speech";
-            divider.innerHTML = a.lines;
+            const speaker = document.createElement('span');
+            speaker.className = "speaker";
+            speaker.innerHTML = a.speaker;
+            divider.appendChild(speaker);
+            a.linesGenerator(divider);
             sceneHere.appendChild(divider);
         })
     }
@@ -94,5 +111,14 @@ class Speech{
     constructor(speaker, lines){
         this.speaker = speaker;
         this.lines = lines;
+    }
+    linesGenerator(container){
+        
+        this.lines.forEach(l=>{
+            const line = document.createElement('p');
+            line.innerHTML = `${l}`;
+            container.appendChild(line);
+        })
+        return container;
     }
 }
