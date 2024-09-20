@@ -7,11 +7,13 @@ document.addEventListener("DOMContentLoaded", function() {
    var playTitle = document.querySelector('#playHere h2');
    var actTitle = document.querySelector('#actHere h3');
    var sceneTitle = document.querySelector('#sceneHere h4');
-   var speechText = document.querySelectorAll('#sceneHere .speech');
-   
+   var sceneHere = document.getElementById('sceneHere');
+   var speechText = document.querySelectorAll('#sceneHere speech');
+
+   console.log(typeof(speechText), "speechtext in js ")
    playlist.addEventListener('change', (e)=>{
-      fetch(url+ `?name=${e.target.value}`)
-         .then(console.log("hi"))
+      fetch(url + `?name=${e.target.value}`)
+         //.then(console.log("hi"))
          .then(response => response.json())
          .then(play=> {
             playTitle.innerHTML = `${play.title}`;
@@ -41,10 +43,14 @@ document.addEventListener("DOMContentLoaded", function() {
             
             
             sceneList.addEventListener('change', (e)=>{
+              // console.log(selectedAct);
                if(selectedAct){
                   const selectedScene = selectedAct.getScene(e.target.value);
                   sceneTitle.innerHTML = selectedScene.name;
-                  selectedScene.speechFill(speechText);
+
+
+                  selectedScene.speechFill(speechText, sceneHere);
+
                }
                
             });
@@ -58,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 	
-	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
+	const url = 'https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php';
 
    /*
      To get a specific play, add play name via query string, 

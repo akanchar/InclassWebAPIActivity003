@@ -68,7 +68,8 @@ export class Scene {
         optionScene.text = this.name;
         return optionScene;
     }
-    speechFill(speechText){ //WIP
+    speechFill(speechText, sceneHere){ //WIP
+        console.log(typeof(speechHere))
         speechText.forEach(div=>{
             div.remove();
         })
@@ -76,7 +77,7 @@ export class Scene {
             const divider = document.createElement('div');
             divider.className = "speech";
             divider.innerHTML = a.lines;
-            speechText.appendChild(divider);
+            sceneHere.appendChild(divider);
         })
     }
 
