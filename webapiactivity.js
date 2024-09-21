@@ -1,35 +1,40 @@
 import {Play,Act,Scene} from './play-module.js';
 
 document.addEventListener("DOMContentLoaded", function() {
+   //list of variables and constants used to address different parts of html
    const playlist = document.getElementById('playList');
    const actList = document.getElementById('actList');
    const sceneList =document.getElementById('sceneList');
+   const playerList = document.getElementById('playerList');
    var playTitle = document.querySelector('#playHere h2');
    var actTitle = document.querySelector('#actHere h3');
    var sceneTitle = document.querySelector('#sceneHere h4');
    var sceneHere = document.getElementById('sceneHere');
    var speechText = document.querySelectorAll('#sceneHere speech');
 
-   console.log(typeof(speechText), "speechtext in js ")
-   playlist.addEventListener('change', (e)=>{
-      fetch(url + `?name=${e.target.value}`)
+   //console.log(typeof(speechText), "speechtext in js ")
+   playlist.addEventListener('change', (e)=>{ 
+      fetch(url + `?name=${e.target.value}`)//fetches url based on play list
          //.then(console.log("hi"))
          .then(response => response.json())
          .then(play=> {
-            playTitle.innerHTML = `${play.title}`;
-            const playObj = new Play(play.title, play.short, play.persona, play.acts);
+            playTitle.innerHTML = `${play.title}`; //changes play title on screen
+            const playObj = new Play(play.title, play.short, play.persona, play.acts); //creates Play object for selected play
             //console.log(play);
-            if (playObj.acts.length>0){
+            if (playObj.acts.length>0){ // initializes act and scene name to act 1 and scene 1 of selected play
                actList.value = playObj.acts[0].name;
                actTitle.innerHTML = playObj.acts[0].name;
                sceneList.value = playObj.acts[0].scenes[0].name;
                sceneTitle.innerHTML = playObj.acts[0].scenes[0].name;
-            playObj.startPlay(actList,sceneList);
             }
-            actList.addEventListener('change', (e) => {
+
+            playObj.startPlay(actList,sceneList,playerList);  //initializes and populates act list, scene list, and player list
+            playObj.acts[0].scenes[0].speechFill(speechText,sceneHere); // fills dialogue of act 1 scene 1 onto screen of selected play automatically
+
+            actList.addEventListener('change', (e) => { // when the selected act changes...
                sceneList.innerHTML = '';
                
-               // Find the selected act based on the act name
+               // Find the selected act and scene based on the act name
                const selectedAct = playObj.getAct(e.target.value);
                actTitle.innerHTML = selectedAct.name;
                sceneTitle.innerHTML = selectedAct.scenes[0].name;
@@ -42,8 +47,8 @@ document.addEventListener("DOMContentLoaded", function() {
                      
                }
             
-            
-            sceneList.addEventListener('change', (e)=>{
+      
+            sceneList.addEventListener('change', (e)=>{ //if scene list is changed to another option...
               // console.log(selectedAct);
                if(selectedAct){
                   const selectedScene = selectedAct.getScene(e.target.value);
@@ -52,6 +57,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
                }
                
+            });
+
+            playerList.addEventListener('change', (e)=>{ // when the playerlist changes....
+               const selectedSpeaker = e.target.value;
+               
+               
+         
             });
          });
             

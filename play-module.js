@@ -1,6 +1,5 @@
 
-/* In this module, create three classes: Play, Act, and Scene. */
-export class Play {
+export class Play { 
     constructor(title, short, persona, acts){
         this.title = title;
         this.short = short;
@@ -8,9 +7,10 @@ export class Play {
         this.acts = acts.map(act=> new Act(act.name, act.scenes));
 
     }
-    startPlay(actList, sceneList){
+    startPlay(actList, sceneList, playerList){ //initiliazes selected play by filling in act, scene, and player list
         actList.innerHTML= '';
         sceneList.innerHTML = '';
+        playerList.innerHTML = '';
 
         const actInitial = document.createElement('option');
         actInitial.value = "Select An Act";
@@ -22,12 +22,21 @@ export class Play {
         sceneInitial.text = "Select A Scene";
         sceneList.appendChild(sceneInitial);
 
-        this.acts.forEach(act => { //for each act...
+        const playerInitial = document.createElement('option');
+        playerInitial.value = "0";
+        playerInitial.text = "All Players";
+        playerList.appendChild(playerInitial);
+
+        this.acts.forEach(act => { //for each act, it creates an option and appends to act list for dropdown
             actList.appendChild(act.actOption()); 
-    });
+        
+        });
+        this.persona.forEach(person => { //for each person in the selected play, it creates an option for playerlist dropdown.
+            playerList.appendChild(person.personOption());
+        })
     }
 
-    getAct(name){
+    getAct(name){ //returns act object based on given act name
         return this.acts.find(act=>act.name===name);
     }
 }
@@ -36,20 +45,20 @@ export class Act {
         this.name = name;
         this.scenes = scenes.map(scene=> new Scene(scene.name,scene.title,scene.stageDirection, scene.speeches));
     }
-    actOption(){
+    actOption(){ //creates option element for act object
         const optionAct = document.createElement('option');
         optionAct.value = this.name;
         optionAct.text = this.name;
         return optionAct;
     }
 
-    sceneOptionList(sceneList){
+    sceneOptionList(sceneList){ // creates list of scenes based on selected act
         sceneList.innerHTML = '';
-        this.scenes.forEach(scene => { //for each scene...
+        this.scenes.forEach(scene => { //for each scene, creates option 
             sceneList.appendChild(scene.sceneOption()); 
         })
     }
-    getScene(name){
+    getScene(name){ //returns scene object 
         return this.scenes.find(scene=>scene.name===name);
     }
 }
@@ -62,13 +71,13 @@ export class Scene {
         this.stageDirection = stageDirection;
         this.speeches = speeches.map(speech=>new Speech(speech.speaker, speech.lines));
     }
-    sceneOption(){
+    sceneOption(){ //creates scene options
         const optionScene = document.createElement('option');
         optionScene.value = this.name;
         optionScene.text = this.name;
         return optionScene;
     }
-    speechFill(speechText, sceneHere){ //WIP
+    speechFill(speechText, sceneHere){ //fills scene dialogue with scene title,stage direction, speakers, and respective dialogues
         console.log(typeof(speechHere))
         sceneHere.innerHTML = '';
         
@@ -106,13 +115,20 @@ class Persona{
         this.player = player;
         this.desc  = desc;
     }
+    personOption(){ //creates option for each person in play
+        const optionPerson = document.createElement('option');
+        optionPerson.value = this.player;
+        optionPerson.text = this.player;
+        optionPerson.id = this.desc;
+        return optionPerson;
+    }
 }
 class Speech{
     constructor(speaker, lines){
         this.speaker = speaker;
         this.lines = lines;
     }
-    linesGenerator(container){
+    linesGenerator(container){ //creates paragraph element for each line in the speech of a speaker
         
         this.lines.forEach(l=>{
             const line = document.createElement('p');
