@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
    const sceneHere = document.getElementById('sceneHeres');
 
    let playData; 
+   let selectedPlayer = '0'; //track the player
 
    // Event listener for the playList change
    playList.addEventListener('change', async () => {
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Populate playerList
       if (playData.persona && playData.persona.length > 0) {
          playerList.innerHTML = playData.persona.map(player => `<option value="${player.player}">${player.player} - ${player.desc}</option>`).join('');
-         
+
          playerList.insertAdjacentHTML('afterbegin', '<option value="0">All Players</option>');
       }
    });
@@ -51,6 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (playData && playData.acts[selectedActIndex] && selectedSceneIndex >= 0 && selectedSceneIndex < playData.acts[selectedActIndex].scenes.length) {
          updatePlayDetails(selectedActIndex, selectedSceneIndex);
       }
+   });
+//stores the selected player nd hopefully changes the display
+   playerList.addEventListener('change', () => {
+      selectedPlayer = playerList.value; 
+      const selectedActIndex = actList.selectedIndex;
+      const selectedSceneIndex = sceneList.selectedIndex;
+      updatePlayDetails(selectedActIndex, selectedSceneIndex);  
    });
 
    // Helper function to populate scene list based on selected act
@@ -94,7 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
    }
 
    // Populate Speeches (fills the div, span, and p elements in the html)
-   scene.speeches.forEach(speech => {
+   scene.speeches
+   .filter(speech => selectedPlayer === "0" || speech.speaker === selectedPlayer)  // Show all or filter by player
+   .forEach(speech => {
       const speechDiv = document.createElement('div');
       speechDiv.className = 'speech';
 
@@ -110,5 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sceneHere.appendChild(speechDiv);
    });
-  }
+}
 });
+
+
+// need to add hightlight portion of the code 
