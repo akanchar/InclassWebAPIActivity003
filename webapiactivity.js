@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function() {
    const actList = document.getElementById('actList');
    const sceneList =document.getElementById('sceneList');
    const playerList = document.getElementById('playerList');
+   const filterBtn = document.getElementById('btnHighlight');
+   const filterText = document.getElementById('txtHighlight')
    var playTitle = document.querySelector('#playHere h2');
    var actTitle = document.querySelector('#actHere h3');
    var sceneTitle = document.querySelector('#sceneHere h4');
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
    var speechText = document.querySelectorAll('#sceneHere speech');
 
    //console.log(typeof(speechText), "speechtext in js ")
+
    playlist.addEventListener('change', (e)=>{ 
       fetch(url + `?name=${e.target.value}`)//fetches url based on play list
          //.then(console.log("hi"))
@@ -59,19 +62,41 @@ document.addEventListener("DOMContentLoaded", function() {
                
             });
 
-            playerList.addEventListener('change', (e)=>{ // when the playerlist changes....
+             playerList.addEventListener('change', (e)=>{ // when the playerlist changes....
                const selectedSpeaker = e.target.value;
+               console.log(selectedSpeaker);
+               const selectedScene = selectedAct.getScene(sceneTitle.innerHTML);
+               console.log(selectedScene.name);
+               if (selectedSpeaker!=null){
+                  selectedScene.speechFill(speechText, sceneHere, selectedSpeaker);
+               }
+               else{
+                  selectedScene.speechFill(speechText,sceneHere);
+               } 
                
-               
-         
             });
+            filterBtn.addEventListener('click',(e)=>{
+               const input = filterText.value;
+               console.log(input);
+               const selectedSpeaker = playerList.value;
+               const selectedScene = selectedAct.getScene(sceneTitle.innerHTML);
+               if (input || selectedSpeaker){
+                  selectedScene.speechFill(speechText,sceneHere,selectedSpeaker,input);
+               }
+               else if (!input&&!selectedSpeaker){
+                  selectedScene.speechFill(speechText,sceneHere);
+               }
+               else{
+                  selectedScene.speechFill(speechText, sceneHere, selectedSpeaker || null, input);
+               }
+            })
          });
             
             
-       })
+       
 
         });
-      });
+   });
 
 
 	
@@ -92,4 +117,4 @@ document.addEventListener("DOMContentLoaded", function() {
        Some possibilities: if using Visual Code, use Live Server extension; if Brackets,
        use built-in Live Preview.
     */
-// });
+});

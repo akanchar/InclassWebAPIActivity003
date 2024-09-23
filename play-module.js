@@ -1,4 +1,5 @@
 
+
 export class Play { 
     constructor(title, short, persona, acts){
         this.title = title;
@@ -23,7 +24,7 @@ export class Play {
         sceneList.appendChild(sceneInitial);
 
         const playerInitial = document.createElement('option');
-        playerInitial.value = "0";
+        playerInitial.value = null;
         playerInitial.text = "All Players";
         playerList.appendChild(playerInitial);
 
@@ -77,8 +78,8 @@ export class Scene {
         optionScene.text = this.name;
         return optionScene;
     }
-    speechFill(speechText, sceneHere){ //fills scene dialogue with scene title,stage direction, speakers, and respective dialogues
-        console.log(typeof(speechHere))
+    speechFill(speechText, sceneHere, selectedSpeaker = null,filterText = null){ //fills scene dialogue with scene title,stage direction, speakers, and respective dialogues
+        //console.log(typeof(speechHere))
         sceneHere.innerHTML = '';
         
         const name = document.createElement('h4');
@@ -96,15 +97,20 @@ export class Scene {
         sceneHere.appendChild(direction);
 
         this.speeches.forEach(a=>{
-            const divider = document.createElement('div');
-            divider.className = "speech";
-            const speaker = document.createElement('span');
-            speaker.className = "speaker";
-            speaker.innerHTML = a.speaker;
-            divider.appendChild(speaker);
-            a.linesGenerator(divider);
-            sceneHere.appendChild(divider);
-        })
+            if(selectedSpeaker === null || a.speaker === selectedSpeaker){ // or statement from ChatGPT to help handle selected speaker
+                const divider = document.createElement('div');
+                divider.className = "speech";
+                const speaker = document.createElement('span');
+                speaker.className = "speaker";
+                speaker.innerHTML = a.speaker;
+                divider.appendChild(speaker);
+                a.linesGenerator(divider,filterText);
+        
+                
+                sceneHere.appendChild(divider);
+            }
+            
+        });
     }
 
 }
@@ -124,17 +130,30 @@ class Persona{
     }
 }
 class Speech{
-    constructor(speaker, lines){
+    constructor(speaker, lines,stagedir ){
         this.speaker = speaker;
         this.lines = lines;
+        this.stagedir = stagedir;
+        
     }
-    linesGenerator(container){ //creates paragraph element for each line in the speech of a speaker
+    linesGenerator(container,filterText = null){ //creates paragraph element for each line in the speech of a speaker
         
         this.lines.forEach(l=>{
             const line = document.createElement('p');
-            line.innerHTML = `${l}`;
+            if (filterText===null){
+                line.innerHTML = `${l}`;
+            }
+            else { // got this else from ChatGPT and https://www.w3schools.com/Js/js_regexp.asp
+                const regex = new RegExp(`(${filterText})`, 'gi');
+                line.innerHTML = l.replace(regex, `<b>$1</b>`);
+            }
+
             container.appendChild(line);
+            
         })
+        
         return container;
     }
 }
+// need to adjust for when no player is selected,will still look for input
+// and for when you want to go back to all players option
