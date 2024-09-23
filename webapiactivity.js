@@ -5,45 +5,109 @@ document.addEventListener('DOMContentLoaded', () => {
    const playerList = document.getElementById('playerList');
    const playHere = document.getElementById('playHere');
    const actHere = document.getElementById('actHere');
-   const sceneHere = document.getElementById('sceneHere');
+   const sceneHere = document.getElementById('sceneHeres');
 
+   let playData; 
+
+   // Event listener for the playList change
    playList.addEventListener('change', async () => {
       const playValue = playList.value;
-      if (playValue === '0') return; // Ignore the default option
+      if (playValue === '0') return;
 
-      try {
-         // Fetch the play data using the selected play's value as a query string
-         const response = await fetch(`https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php?name=${playValue}`);
-         const playData = await response.json();
+      const response = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${playValue}`);
+      playData = await response.json();
 
-         // Populate actList with the acts from the play
-         actList.innerHTML = playData.acts.map(act => `<option value="${act.id}">${act.name}</option>`).join('');
+      // Update play title
+      playHere.querySelector('h2').textContent = playData.title;
 
-         // Populate sceneList with the scenes from the first act
-         sceneList.innerHTML = playData.acts[0].scenes.map(scene => `<option value="${scene.id}">${scene.name}</option>`).join('');
+      // Populate actList
+      if (playData.acts && playData.acts.length > 0) {
+         actList.innerHTML = playData.acts.map((act, index) => `<option value="${index}">${act.name}</option>`).join('');
+         updateSceneList(0);  
+         updatePlayDetails(0, 0);  
+      }
 
-         // Populate playerList with the characters/players from the play
+      // Populate playerList
+      if (playData.players && playData.players.length > 0) {
          playerList.innerHTML = playData.players.map(player => `<option value="${player.id}">${player.name}</option>`).join('');
-         playerList.insertAdjacentHTML('afterbegin', '<option value="0">All Players</option>'); // Add default option
-
-         // Populate playHere, actHere, and sceneHere elements with the first scene from the first act
-         playHere.querySelector('h2').textContent = playData.title;
-         actHere.querySelector('h3').textContent = playData.acts[0].name;
-         sceneHere.querySelector('h4').textContent = playData.acts[0].scenes[0].name;
-
-         // Clear previous scene content before adding new content
-         sceneHere.querySelectorAll('.speech, .title, .direction').forEach(el => el.remove());
-
-         // Add the content of the first scene (like speeches, directions, etc.)
-         playData.acts[0].scenes[0].content.forEach(content => {
-            const element = document.createElement(content.type);
-            element.className = content.class;
-            element.innerHTML = content.text;
-            sceneHere.appendChild(element);
-         });
-
-      } catch (error) {
-         console.error('Error fetching play data:', error);
+         playerList.insertAdjacentHTML('afterbegin', '<option value="0">All Players</option>');
       }
    });
+
+   // Event listener for actList change
+   actList.addEventListener('change', () => {
+      const selectedActIndex = actList.selectedIndex;
+      if (playData && playData.acts && selectedActIndex >= 0 && selectedActIndex < playData.acts.length) {
+         updateSceneList(selectedActIndex);
+         updatePlayDetails(selectedActIndex, 0);  
+      }
+   });
+
+   // Event listener for sceneList change
+   sceneList.addEventListener('change', () => {
+      const selectedActIndex = actList.selectedIndex;
+      const selectedSceneIndex = sceneList.selectedIndex;
+      if (playData && playData.acts[selectedActIndex] && selectedSceneIndex >= 0 && selectedSceneIndex < playData.acts[selectedActIndex].scenes.length) {
+         updatePlayDetails(selectedActIndex, selectedSceneIndex);
+      }
+   });
+
+   // Helper function to populate scene list based on selected act
+   function updateSceneList(actIndex) {
+      const scenes = playData.acts[actIndex].scenes;
+      sceneList.innerHTML = scenes.map((scene, index) => `<option value="${index}">${scene.name}</option>`).join('');
+   }
+
+  // Helper function to update play, act, and scene details
+  function updatePlayDetails(actIndex, sceneIndex) {
+   const act = playData.acts[actIndex];
+   const scene = act.scenes[sceneIndex];
+
+   // Clear previous content
+   sceneHere.innerHTML = '';
+
+   // Update Act Name
+   if (actHere && actHere.querySelector('h3')) {
+      actHere.querySelector('h3').textContent = act.name;
+   }
+
+   // Display Scene Name 
+   const sceneNameElement = document.createElement('h4');
+   sceneNameElement.textContent = scene.name;
+   sceneHere.appendChild(sceneNameElement);
+
+   // Display Scene Title
+   if (scene.title) {
+      const sceneTitleElement = document.createElement('p');
+      sceneTitleElement.className = 'scene-title';  
+      sceneTitleElement.textContent = scene.title;
+      sceneHere.appendChild(sceneTitleElement);
+   }
+
+   // Add Stage Direction
+   if (scene.stageDirection) {
+      const stageDirectionElement = document.createElement('p');
+      stageDirectionElement.className = 'stage-direction';
+      stageDirectionElement.textContent = scene.stageDirection;
+      sceneHere.appendChild(stageDirectionElement);
+   }
+
+   // Populate Speeches
+   scene.speeches.forEach(speech => {
+      const speechDiv = document.createElement('div');
+      speechDiv.className = 'speech';
+
+      const speakerElement = document.createElement('span');
+      speakerElement.textContent = speech.speaker;
+      speechDiv.appendChild(speakerElement);
+
+      speech.lines.forEach(line => {
+         const lineElement = document.createElement('p');
+         lineElement.textContent = line;
+         speechDiv.appendChild(lineElement);
+      });
+
+      sceneHere.appendChild(speechDiv);
+   });
+  }
 });
