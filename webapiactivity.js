@@ -28,8 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Populate playerList
-      if (playData.players && playData.players.length > 0) {
-         playerList.innerHTML = playData.players.map(player => `<option value="${player.id}">${player.name}</option>`).join('');
+      if (playData.persona && playData.persona.length > 0) {
+         playerList.innerHTML = playData.persona.map(player => `<option value="${player.player}">${player.player} - ${player.desc}</option>`).join('');
+         
          playerList.insertAdjacentHTML('afterbegin', '<option value="0">All Players</option>');
       }
    });
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sceneHere.appendChild(sceneTitleElement);
    }
 
-   // Add Stage Direction
+   // stage directuion (in element p )
    if (scene.stageDirection) {
       const stageDirectionElement = document.createElement('p');
       stageDirectionElement.className = 'stage-direction';
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sceneHere.appendChild(stageDirectionElement);
    }
 
-   // Populate Speeches
+   // Populate Speeches (fills the div, span, and p elements in the html)
    scene.speeches.forEach(speech => {
       const speechDiv = document.createElement('div');
       speechDiv.className = 'speech';
