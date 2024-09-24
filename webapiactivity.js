@@ -128,12 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 function highlightText(searchText) {
-   const regex = new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+   const regex = new RegExp(`(${searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
 
    // Iterate through all <p> and <span> elements inside sceneHere
    const textNodes = sceneHere.querySelectorAll('p, span');
    textNodes.forEach(node => {
-      const originalHTML = node.innerHTML;
+      const originalHTML = node.textContent;
       const highlightedHTML = originalHTML.replace(regex, match => `<span class="highlight">${match}</span>`);
       node.innerHTML = highlightedHTML;
    });
@@ -157,3 +157,14 @@ const style = document.createElement('style');
 style.innerHTML = `.highlight { background-color: yellow; font-weight: bold; }`;
 document.head.appendChild(style);
 });
+
+
+
+//////////////////////// */
+/* Works Cited 
+chatgpt.com
+copilot.github.com
+geeksforgeeks.org
+*/
+
+         
