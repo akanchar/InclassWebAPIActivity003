@@ -5,9 +5,10 @@ document.addEventListener("DOMContentLoaded", function() {
    const playList = document.getElementById('playList');
    const actList = document.getElementById('actList');
    const sceneList = document.getElementById('sceneList');
-   const playerList = docuemnt.getElementById('playerList');
+   const playerList = document.getElementById('playerList');
    const playHere = document.getElementById('playHere');
-   
+   let playDataGlobal = {}; // Store fetched play data for later use
+
    // Add event listener to playlist dropdown
    playList.addEventListener('change', function() {
       const selectedPlay = playList.value;
@@ -23,10 +24,12 @@ document.addEventListener("DOMContentLoaded", function() {
       fetch(playUrl)
          .then(response => response.json())
          .then(data => {
+            playDataGlobal = data;
             console.log(data);
             populateActs(data);
             populatePlayers(data.persona);
-      })
+            updateSceneAndActDisplay();
+         })
          .catch(err => console.error('Error fetching play data:', err));
    }
 
@@ -59,6 +62,15 @@ document.addEventListener("DOMContentLoaded", function() {
       });
    }
 
+   // Add event listeners for act and scene selections
+   actList.addEventListener('change', function() {
+      const selectedAct = playDataGlobal.acts[actList.value];
+      populateScenes(selectedAct);
+      updateSceneAndActDisplay();
+   });
+
+   sceneList.addEventListener('change', updateSceneAndActDisplay);
+
    // Populate the player list based on the persona data
    function populatePlayers(personaData) {
       playerList.innerHTML = '<option value=0>All Players</option>'; // Reset player list
@@ -69,6 +81,70 @@ document.addEventListener("DOMContentLoaded", function() {
          option.value = person.player;
          option.textContent = `${person.player} (${person.desc})`;
          playerList.appendChild(option);
+      });
+   }
+
+   // Populate the playHere section based on play data
+   function updateSceneAndActDisplay() {
+      const selectedActIndex = actList.value;
+      const selectedSceneIndex = sceneList.value;
+
+      // Clear previous content
+      playHere.innerHTML = '';
+
+      // Get the selected act and scene
+      const selectedAct = playDataGlobal.acts[selectedActIndex];
+      const selectedScene = selectedAct.scenes[selectedSceneIndex];
+
+      // Create play title
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = playDataGlobal.title;
+      playHere.appendChild(titleElement);
+
+      // Create act and scene display
+      const actElement = document.createElement('article');
+      actElement.id = 'actHere';
+      playHere.appendChild(actElement);
+
+
+      // Create and append Act name (h3) with styling
+      const actTitleElement = document.createElement('h3');
+      actTitleElement.textContent = selectedAct.name;
+      actElement.appendChild(actTitleElement);
+
+      // Create and append Scene name (h4) with border styling
+      const sceneElement = document.createElement('div');
+      sceneElement.id = 'sceneHere';
+      actElement.appendChild(sceneElement);
+
+      const sceneTitleElement = document.createElement('h4');
+      sceneTitleElement.textContent = selectedScene.name;
+      sceneElement.appendChild(sceneTitleElement);
+
+      // Create and append stage direction
+      const stageDirectionElement = document.createElement('p');
+      stageDirectionElement.className = 'direction';
+      stageDirectionElement.textContent = selectedScene.stageDirection;
+      sceneElement.appendChild(stageDirectionElement);
+
+      // Populate speeches with the correct structure and classes
+      selectedScene.speeches.forEach(speech => {
+         const speechElement = document.createElement('div');
+         speechElement.className = 'speech';
+
+         // Add the speaker name (span)
+         const speakerElement = document.createElement('span');
+         speakerElement.textContent = speech.speaker;
+         speechElement.appendChild(speakerElement);
+
+         // Add each line (p) inside the speech
+         speech.lines.forEach(line => {
+            const lineElement = document.createElement('p');
+            lineElement.textContent = line;
+            speechElement.appendChild(lineElement);
+         });
+
+         sceneElement.appendChild(speechElement);
       });
    }
    /*
