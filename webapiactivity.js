@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const firstAct = currentPlay.acts[0];
         populateScenes(firstAct);
         displayScene(firstAct.scenes[0]);
+        filterPlayersData(currentPlay);
     });
 
     actList.addEventListener("change", () => {
@@ -39,6 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedScene = currentPlay.acts[actIndex].scenes[sceneIndex];
         displayScene(selectedScene);
     });
+
+    playerList.addEventListener("change", () => {
+        const actIndex = parseInt(actList.value);
+        const sceneIndex = parseInt(sceneList.value);
+        const selectedScene = currentPlay.acts[actIndex].scenes[sceneIndex];
+        displayScene(selectedScene);
+    });
+
+    
 
     async function fetchPlayData(playName) {
         const response = await fetch(`${url}?name=${playName}`);
@@ -62,4 +72,25 @@ document.addEventListener("DOMContentLoaded", () => {
         sceneHere.innerHTML = scene.speeches.map(speech => 
             `<div class="speech"><span>${speech.player}</span><p>${speech.text.join('</p><p>')}</p></div>`).join('');
     }
+
+    function filterPlayersData(currentPlay){
+        playerList.innerHTML = currentPlay.persona.map((person, index) => `<option value="${index}">${person.player}</option>`).join('');;
+    }
+    
+    const button = document.querySelector('#btnHighlight')
+    button.addEventListener("click", async(event) =>{
+        var opar = document.getElementById('sceneHere').innerHTML;
+
+
+        var paragraph = document.getElementById('sceneHere');
+  var search = document.getElementById('txtHighlight').value;
+  search = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  var re = new RegExp(search, 'g');
+
+  if (search.length > 0)
+    paragraph.innerHTML = opar.replace(re, `<mark>$&</mark>`);
+  else paragraph.innerHTML = opar;
+
+    })
 });
