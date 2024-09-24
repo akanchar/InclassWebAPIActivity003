@@ -68,83 +68,88 @@ document.addEventListener("DOMContentLoaded", function() {
 
               // On button click, filter speeches and display scene content
               // On button click, filter speeches and display scene content
-btnHighlight.addEventListener('click', function() {
-  const selectedActIndex = actList.value;
-  const selectedSceneIndex = sceneList.value;
-  const searchTerm = txtHighlight.value.toLowerCase();  // Get the search term
-
-  if (selectedActIndex === '' || selectedSceneIndex === '') {
-      alert('Please select both an Act and a Scene.');
-      return;
-  }
-
-  const selectedAct = data.acts[selectedActIndex];
-  const selectedScene = selectedAct.scenes[selectedSceneIndex];
-
-  playHere.innerHTML = '';  // Clear previous content
-
-  // 1. Create and append play title (h2)
-  const playTitle = document.createElement('h2');
-  playTitle.textContent = data.title;  // Use data.title to access the play's full title
-  playHere.appendChild(playTitle);
-  
-  // 2. Create and append act title (h3)
-  const actTitle = document.createElement('h3');
-  actTitle.textContent = selectedAct.name;  // Example: 'ACT I'
-  playHere.appendChild(actTitle);
-  
-  // 3. Create and append scene name (h4)
-  const sceneName = document.createElement('h4');
-  sceneName.textContent = selectedScene.name;  // Example: 'SCENE I'
-  playHere.appendChild(sceneName);
-  
-  // 4. Create and append scene title (p)
-  const sceneTitle = document.createElement('p');
-  sceneTitle.classList.add('title');  // Add a class for styling if needed
-  sceneTitle.textContent = selectedScene.title;  // Use selectedScene.title to get the full scene title (e.g., "Rome: the neighbourhood of Sardis...")
-  playHere.appendChild(sceneTitle);
-  
-  // 5. Create and append stage direction (p, italic)
-  const stageDirection = document.createElement('p');
-  stageDirection.classList.add('direction');
-  stageDirection.style.fontStyle = 'italic';  // Italicize stage direction
-  stageDirection.textContent = selectedScene.stageDirection;
-  playHere.appendChild(stageDirection);
-  
-  // Now continue with appending speeches and other elements
-  
-
-  // Filter speeches by the search term or player and display them
-  selectedScene.speeches.forEach(speech => {
-      const speechDiv = document.createElement('div');
-      speechDiv.classList.add('speech');
-      
-      const speaker = document.createElement('span');
-      speaker.textContent = speech.speaker;
-      speaker.style.fontWeight = 'bold';
-      speaker.style.textTransform = 'uppercase'; // Make speaker name uppercase
-      speechDiv.appendChild(speaker);
-
-      speech.lines.forEach(line => {
-          const lineElement = document.createElement('p');
-
-          // Highlight the search term in the line
-          if (searchTerm !== '') {
-              const regex = new RegExp(searchTerm, 'gi');  // Case-insensitive search
-              const highlightedLine = line.replace(regex, match => {
-                  return `<b>${match}</b>`;  // Wrap matching term with <b> tags
+              btnHighlight.addEventListener('click', function() {
+                const selectedActIndex = actList.value;
+                const selectedSceneIndex = sceneList.value;
+                const selectedPlayerIndex = playerList.value;
+                const searchTerm = txtHighlight.value.toLowerCase();  // Get the search term
+              
+                if (selectedActIndex === '' || selectedSceneIndex === '') {
+                    alert('Please select both an Act and a Scene.');
+                    return;
+                }
+              
+                const selectedAct = data.acts[selectedActIndex];
+                const selectedScene = selectedAct.scenes[selectedSceneIndex];
+                const selectedPlayer = data.persona[selectedPlayerIndex]?.player;  // Get the selected player's name (optional chaining in case it's not selected)
+              
+                playHere.innerHTML = '';  // Clear previous content
+              
+                // 1. Create and append play title (h2)
+                const playTitle = document.createElement('h2');
+                playTitle.textContent = data.title;  // Use data.title to access the play's full title
+                playHere.appendChild(playTitle);
+                
+                // 2. Create and append act title (h3)
+                const actTitle = document.createElement('h3');
+                actTitle.textContent = selectedAct.name;  // Example: 'ACT I'
+                playHere.appendChild(actTitle);
+                
+                // 3. Create and append scene name (h4)
+                const sceneName = document.createElement('h4');
+                sceneName.textContent = selectedScene.name;  // Example: 'SCENE I'
+                playHere.appendChild(sceneName);
+                
+                // 4. Create and append scene title (p)
+                const sceneTitle = document.createElement('p');
+                sceneTitle.classList.add('title');  // Add a class for styling if needed
+                sceneTitle.textContent = selectedScene.title;  // Use selectedScene.title to get the full scene title
+                playHere.appendChild(sceneTitle);
+                
+                // 5. Create and append stage direction (p, italic)
+                const stageDirection = document.createElement('p');
+                stageDirection.classList.add('direction');
+                stageDirection.style.fontStyle = 'italic';  // Italicize stage direction
+                stageDirection.textContent = selectedScene.stageDirection;
+                playHere.appendChild(stageDirection);
+                
+                // Now continue with appending all speeches, highlighting only the selected player's lines
+                selectedScene.speeches.forEach(speech => {
+                    const speechDiv = document.createElement('div');
+                    speechDiv.classList.add('speech');
+                    
+                    const speaker = document.createElement('span');
+                    speaker.textContent = speech.speaker;
+                    speaker.style.fontWeight = 'bold';
+                    speaker.style.textTransform = 'uppercase';  // Make speaker name uppercase
+                    speechDiv.appendChild(speaker);
+              
+                    speech.lines.forEach(line => {
+                        const lineElement = document.createElement('p');
+              
+                        // Highlight the search term only for the selected player's speeches
+                        if (selectedPlayer && speech.speaker.toLowerCase() === selectedPlayer.toLowerCase()) {
+                            if (searchTerm !== '') {
+                                const regex = new RegExp(searchTerm, 'gi');  // Case-insensitive search
+                                const highlightedLine = line.replace(regex, match => {
+                                    return `<b>${match}</b>`;  // Wrap matching term with <b> tags
+                                });
+                                lineElement.innerHTML = highlightedLine;  // Apply highlighted text for the selected player
+                            } else {
+                                lineElement.textContent = line;  // No highlight, just display the line
+                            }
+                        } else {
+                            lineElement.textContent = line;  // Display other player's lines without highlighting
+                        }
+              
+                        speechDiv.appendChild(lineElement);
+                    });
+              
+                    playHere.appendChild(speechDiv);
+                });
               });
-              lineElement.innerHTML = highlightedLine;  // Apply highlighted text
-          } else {
-              lineElement.textContent = line;  // No highlight, just display the line
-          }
-
-          speechDiv.appendChild(lineElement);
-      });
-
-      playHere.appendChild(speechDiv);
-  });
-});
+              
+              
 
               });
           })
