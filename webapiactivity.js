@@ -2,6 +2,7 @@ import {Play,Act,Scene} from './play-module.js';
 
 document.addEventListener("DOMContentLoaded", function() {
    //list of variables and constants used to address different parts of html
+   const url = 'https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php';
    const playlist = document.getElementById('playList');
    const actList = document.getElementById('actList');
    const sceneList =document.getElementById('sceneList');
@@ -67,40 +68,49 @@ document.addEventListener("DOMContentLoaded", function() {
                console.log(selectedSpeaker);
                const selectedScene = selectedAct.getScene(sceneTitle.innerHTML);
                console.log(selectedScene.name);
-               if (selectedSpeaker!=null){
+               if (selectedSpeaker!=null){ //if there is a speaker, speech fill with speaker
                   selectedScene.speechFill(speechText, sceneHere, selectedSpeaker);
                }
-               else{
+               else{ //reset speeches
                   selectedScene.speechFill(speechText,sceneHere);
                } 
                
             });
-            filterBtn.addEventListener('click',(e)=>{
-               const input = filterText.value;
-               console.log(input);
+            
+            
+            filterBtn.addEventListener('click',(e)=>{ //filters when button is pressed
+               let input = filterText.value;
+               //console.log("Input",input);
                const selectedSpeaker = playerList.value;
+              // console.log("SelectedSpeaker",selectedSpeaker);
                const selectedScene = selectedAct.getScene(sceneTitle.innerHTML);
-               if (input || selectedSpeaker){
+               if (input && selectedSpeaker){ //yes input + yes selectedSpeaker 
+                  console.log("1");
                   selectedScene.speechFill(speechText,sceneHere,selectedSpeaker,input);
                }
-               else if (!input&&!selectedSpeaker){
+               else if (!input&&!selectedSpeaker){ // no input + no selectedSpeaker
+                  console.log("2");
                   selectedScene.speechFill(speechText,sceneHere);
                }
-               else{
-                  selectedScene.speechFill(speechText, sceneHere, selectedSpeaker || null, input);
+               else if(input&&!selectedSpeaker){ //yes input + no selectedSpeaker
+                  console.log("3");
+                  selectedScene.speechFill(speechText,sceneHere, null ,input);
                }
-            })
+               else if(!input&&selectedSpeaker){ // no input + yes speaker
+                  console.log("4");
+                  selectedScene.speechFill(speechText, sceneHere, selectedSpeaker, null);
+               }
+            });
+
+            
          });
-            
-            
-       
+         
 
         });
    });
 
 
 	
-	const url = 'https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php';
 
    /*
      To get a specific play, add play name via query string, 
