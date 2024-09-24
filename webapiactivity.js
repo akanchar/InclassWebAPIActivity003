@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
    const actHere = document.getElementById('actHere');
    const sceneHere = document.getElementById('sceneHeres');
 
+   const txtHighlight = document.getElementById('txtHighlight');
+   const btnHighlight = document.getElementById('btnHighlight');
+
    let playData; 
    let selectedPlayer = '0'; //track the player
 
@@ -124,24 +127,33 @@ document.addEventListener('DOMContentLoaded', () => {
    });
 }
 
-// Highlight search terms
-   btnHighlight.addEventListener('click', () => {
-      let lookText = document.getElementById('lookText').value;
-      let doText = document.getElementById('doText').innerHTML;
+function highlightText(searchText) {
+   const regex = new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
 
-      if (!lookText) {
-         alert("Please enter a search term");
-         return;
+   // Iterate through all <p> and <span> elements inside sceneHere
+   const textNodes = sceneHere.querySelectorAll('p, span');
+   textNodes.forEach(node => {
+      const originalHTML = node.innerHTML;
+      const highlightedHTML = originalHTML.replace(regex, match => `<span class="highlight">${match}</span>`);
+      node.innerHTML = highlightedHTML;
+   });
+}
+
+// Search and highlight functionality using txtHighlight and btnHighlight
+btnHighlight.addEventListener('click', () => {
+   let searchText = txtHighlight.value.trim();  // Get the search input value
+
+   if (!searchText) {
+      alert("Please enter a search term");
+      return;
    }
 
-      let searchPattern = new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+   // Highlight only matching text inside the sceneHere element
+   highlightText(searchText);
+});
 
-      let highlightedText = sceneText.replace(searchPattern, match => `<span class="highlight">${match}</span>`);
-
-      sceneHere.innerHTML = highlightedText;
-   });
-
-   const style = document.createElement('style');
-   style.innerHTML = '.highlight { background-color: yellow; }';
-   document.head.appendChild(style);
+// Add CSS for the highlight class
+const style = document.createElement('style');
+style.innerHTML = `.highlight { background-color: yellow; font-weight: bold; }`;
+document.head.appendChild(style);
 });
