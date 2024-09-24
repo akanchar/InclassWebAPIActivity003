@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Populate playerList
       if (playData.persona && playData.persona.length > 0) {
          playerList.innerHTML = playData.persona.map(player => `<option value="${player.player}">${player.player} - ${player.desc}</option>`).join('');
-
          playerList.insertAdjacentHTML('afterbegin', '<option value="0">All Players</option>');
       }
    });
@@ -67,13 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
       sceneList.innerHTML = scenes.map((scene, index) => `<option value="${index}">${scene.name}</option>`).join('');
    }
 
+   
+
   // Helper function to update play, act, and scene details
-  function updatePlayDetails(actIndex, sceneIndex) {
-   const act = playData.acts[actIndex];
-   const scene = act.scenes[sceneIndex];
+   function updatePlayDetails(actIndex, sceneIndex) {
+      const act = playData.acts[actIndex];
+      const scene = act.scenes[sceneIndex];
 
    // Clear previous content
-   sceneHere.innerHTML = '';
+      sceneHere.innerHTML = '';
 
    // Update Act Name
    if (actHere && actHere.querySelector('h3')) {
@@ -82,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
    // Display Scene Name 
    const sceneNameElement = document.createElement('h4');
-   sceneNameElement.textContent = scene.name;
-   sceneHere.appendChild(sceneNameElement);
+      sceneNameElement.textContent = scene.name;
+      sceneHere.appendChild(sceneNameElement);
 
    // Display Scene Title
    if (scene.title) {
