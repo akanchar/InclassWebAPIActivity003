@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
    let playData; 
    let selectedPlayer = '0'; //track the player
 
+
    // Event listener for the playList change
    playList.addEventListener('change', async () => {
       const playValue = playList.value;
@@ -122,7 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
       sceneHere.appendChild(speechDiv);
    });
 }
+
+// Highlight search terms
+   btnHighlight.addEventListener('click', () => {
+      let lookText = document.getElementById('lookText').value;
+      let doText = document.getElementById('doText').innerHTML;
+
+      if (!lookText) {
+         alert("Please enter a search term");
+         return;
+   }
+
+      let searchPattern = new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+
+      let highlightedText = sceneText.replace(searchPattern, match => `<span class="highlight">${match}</span>`);
+
+      sceneHere.innerHTML = highlightedText;
+   });
+
+   const style = document.createElement('style');
+   style.innerHTML = '.highlight { background-color: yellow; }';
+   document.head.appendChild(style);
 });
-
-
-// need to add hightlight portion of the code 
