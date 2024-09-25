@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
    const sceneList = document.getElementById('sceneList');
    const playerList = document.getElementById('playerList');
    const playHere = document.getElementById('playHere');
+   const txtHighlight = document.getElementById('txtHighlight');
+    const btnHighlight = document.getElementById('btnHighlight');
    let playDataGlobal = {}; // Store fetched play data for later use
 
    // Add event listener to playlist dropdown
@@ -145,6 +147,47 @@ document.addEventListener("DOMContentLoaded", function() {
          });
 
          sceneElement.appendChild(speechElement);
+      });
+   }
+
+   // Highlight search term and filter speeches by player
+   btnHighlight.addEventListener('click', function() {
+      const searchTerm = txtHighlight.value.trim().toLowerCase();
+      const selectedPlayer = playerList.value;
+
+      // Clear previous highlights
+      clearHighlights();
+
+      // Filter speeches and highlight search term
+      const speeches = document.querySelectorAll('.speech');
+      speeches.forEach(speech => {
+            const speaker = speech.querySelector('span').textContent;
+            const lines = speech.querySelectorAll('p');
+
+            // Show/hide speeches based on player selection
+            if (selectedPlayer !== "0" && speaker !== selectedPlayer) {
+               speech.style.display = 'none'; // Hide if not the selected player
+            } else {
+               speech.style.display = ''; // Show if it matches
+            }
+
+            // Highlight search term in the lines
+            if (searchTerm) {
+               lines.forEach(line => {
+                  const innerHTML = line.innerHTML;
+                  const regex = new RegExp(`(${searchTerm})`, 'gi');
+                  line.innerHTML = innerHTML.replace(regex, '<b>$1</b>'); // Wrap found terms in <b>
+               });
+            }
+      });
+   });
+
+   // Clear previous highlights
+   function clearHighlights() {
+      const lines = document.querySelectorAll('.speech p');
+      lines.forEach(line => {
+            // Remove <b> tags by replacing them with their content
+            line.innerHTML = line.innerHTML.replace(/<b>(.*?)<\/b>/g, '$1');
       });
    }
    /*
