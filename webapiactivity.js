@@ -1,208 +1,205 @@
-
-
 document.addEventListener("DOMContentLoaded", function() {
-	const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
-   const playList = document.getElementById('playList');
-   const actList = document.getElementById('actList');
-   const sceneList = document.getElementById('sceneList');
-   const playerList = document.getElementById('playerList');
-   const playHere = document.getElementById('playHere');
-   const txtHighlight = document.getElementById('txtHighlight');
-    const btnHighlight = document.getElementById('btnHighlight');
-   let playDataGlobal = {}; // Store fetched play data for later use
+   // Wait for the DOM to be fully loaded before running the script.
+   
+   const url = 'https://www.randyconnolly.com//funwebdev/3rd/api/shakespeare/play.php';
+   // API endpoint for fetching Shakespeare play data.
 
-   // Add event listener to playlist dropdown
+   const playList = document.getElementById('playList');
+   // Dropdown element for selecting a play.
+
+   const actList = document.getElementById('actList');
+   // Dropdown element for selecting an act.
+
+   const sceneList = document.getElementById('sceneList');
+   // Dropdown element for selecting a scene.
+
+   const playerList = document.getElementById('playerList');
+   // Dropdown element for selecting a character/player.
+
+   const playHere = document.getElementById('playHere');
+   // Section to display the play content (acts, scenes, speeches).
+
+   const txtHighlight = document.getElementById('txtHighlight');
+   // Input field to enter text for highlighting within the play.
+
+   const btnHighlight = document.getElementById('btnHighlight');
+   // Button to trigger highlighting of the specified search term.
+
+   let playDataGlobal = {}; // Store fetched play data for later use.
+
+   // Add event listener to the playList dropdown for changing the selected play.
    playList.addEventListener('change', function() {
-      const selectedPlay = playList.value;
+      const selectedPlay = playList.value; // Get the value of the selected play.
       if (selectedPlay === "hamlet") {
-         fetchPlayData('hamlet.json');
+         fetchPlayData('hamlet.json'); // Fetch Hamlet play data.
       } else if (selectedPlay === "jcaesar") {
-         fetchPlayData('jcaesar.json');
+         fetchPlayData('jcaesar.json'); // Fetch Julius Caesar play data.
       }
    });
 
-   // Fetch play data and populate act dropdown
+   // Function to fetch the play data from the API and populate the act dropdown.
    function fetchPlayData(playUrl) {
-      fetch(playUrl)
-         .then(response => response.json())
+      fetch(playUrl) // Fetch play data from the provided URL.
+         .then(response => response.json()) // Parse the response to JSON.
          .then(data => {
-            playDataGlobal = data;
-            console.log(data);
-            populateActs(data);
-            populatePlayers(data.persona);
-            updateSceneAndActDisplay();
+            playDataGlobal = data; // Store the fetched data globally for later use.
+            console.log(data); // Log the fetched data to the console for debugging.
+            populateActs(data); // Populate the act dropdown based on the fetched data.
+            populatePlayers(data.persona); // Populate the player dropdown.
+            updateSceneAndActDisplay(); // Display the first act and scene by default.
          })
-         .catch(err => console.error('Error fetching play data:', err));
+         .catch(err => console.error('Error fetching play data:', err)); // Handle fetch errors.
    }
 
-   // Populate the act list with the fetched data
+   // Function to populate the act list using the fetched play data.
    function populateActs(playData) {
-      actList.innerHTML = '';
+      actList.innerHTML = ''; // Clear any existing act options.
 
-      // Populate acts
+      // Loop through each act and create an option element for the dropdown.
       playData.acts.forEach((act, index) => {
          const option = document.createElement('option');
-         option.value = index;
-         option.textContent = act.name;
-         actList.appendChild(option);
+         option.value = index; // Set the option value to the act index.
+         option.textContent = act.name; // Set the option text to the act name.
+         actList.appendChild(option); // Add the option to the act dropdown.
       });
 
-      // Populate the scenes for the first act
-      populateScenes(playData.acts[0]);
+      populateScenes(playData.acts[0]); // Populate the scenes for the first act by default.
    }
 
-   // Populate the scene list based on the selected act
+   // Function to populate the scene list based on the selected act.
    function populateScenes(actData) {
-      sceneList.innerHTML = '';
+      sceneList.innerHTML = ''; // Clear any existing scene options.
 
-      // Populate scenes
+      // Loop through each scene in the selected act and create an option element.
       actData.scenes.forEach((scene, index) => {
          const option = document.createElement('option');
-         option.value = index;
-         option.textContent = scene.name;
-         sceneList.appendChild(option);
+         option.value = index; // Set the option value to the scene index.
+         option.textContent = scene.name; // Set the option text to the scene name.
+         sceneList.appendChild(option); // Add the option to the scene dropdown.
       });
    }
 
-   // Add event listeners for act and scene selections
+   // Add event listener to the act dropdown to populate the scenes for the selected act.
    actList.addEventListener('change', function() {
-      const selectedAct = playDataGlobal.acts[actList.value];
-      populateScenes(selectedAct);
-      updateSceneAndActDisplay();
+      const selectedAct = playDataGlobal.acts[actList.value]; // Get the selected act data.
+      populateScenes(selectedAct); // Populate the scenes for the selected act.
+      updateSceneAndActDisplay(); // Update the displayed act and scene content.
    });
 
+   // Add event listener to the scene dropdown to update the displayed content on change.
    sceneList.addEventListener('change', updateSceneAndActDisplay);
 
-   // Populate the player list based on the persona data
+   // Function to populate the player list dropdown using the persona data.
    function populatePlayers(personaData) {
-      playerList.innerHTML = '<option value=0>All Players</option>'; // Reset player list
+      playerList.innerHTML = '<option value=0>All Players</option>'; // Add default 'All Players' option.
 
-      // Populate players
+      // Loop through each persona and create an option element for each player.
       personaData.forEach(person => {
          const option = document.createElement('option');
-         option.value = person.player;
-         option.textContent = `${person.player} (${person.desc})`;
-         playerList.appendChild(option);
+         option.value = person.player; // Set the option value to the player name.
+         option.textContent = `${person.player} (${person.desc})`; // Set the option text to player + description.
+         playerList.appendChild(option); // Add the option to the player dropdown.
       });
    }
 
-   // Populate the playHere section based on play data
+   // Function to update the display of the selected act and scene.
    function updateSceneAndActDisplay() {
-      const selectedActIndex = actList.value;
-      const selectedSceneIndex = sceneList.value;
+      const selectedActIndex = actList.value; // Get the selected act index.
+      const selectedSceneIndex = sceneList.value; // Get the selected scene index.
 
-      // Clear previous content
-      playHere.innerHTML = '';
+      playHere.innerHTML = ''; // Clear any existing content in the playHere section.
 
-      // Get the selected act and scene
-      const selectedAct = playDataGlobal.acts[selectedActIndex];
-      const selectedScene = selectedAct.scenes[selectedSceneIndex];
+      const selectedAct = playDataGlobal.acts[selectedActIndex]; // Get the selected act data.
+      const selectedScene = selectedAct.scenes[selectedSceneIndex]; // Get the selected scene data.
 
-      // Create play title
+      // Create and append the play title (h2).
       const titleElement = document.createElement('h2');
       titleElement.textContent = playDataGlobal.title;
       playHere.appendChild(titleElement);
 
-      // Create act and scene display
+      // Create an article to hold the act and scene content.
       const actElement = document.createElement('article');
-      actElement.id = 'actHere';
+      actElement.id = 'actHere'; // Set the article ID.
       playHere.appendChild(actElement);
 
-
-      // Create and append Act name (h3) with styling
+      // Create and append the act title (h3).
       const actTitleElement = document.createElement('h3');
       actTitleElement.textContent = selectedAct.name;
       actElement.appendChild(actTitleElement);
 
-      // Create and append Scene name (h4) with border styling
+      // Create a div for the scene content and append it.
       const sceneElement = document.createElement('div');
       sceneElement.id = 'sceneHere';
       actElement.appendChild(sceneElement);
 
+      // Create and append the scene title (h4).
       const sceneTitleElement = document.createElement('h4');
       sceneTitleElement.textContent = selectedScene.name;
       sceneElement.appendChild(sceneTitleElement);
 
-      // Create and append stage direction
+      // Create and append the stage direction (p).
       const stageDirectionElement = document.createElement('p');
       stageDirectionElement.className = 'direction';
       stageDirectionElement.textContent = selectedScene.stageDirection;
       sceneElement.appendChild(stageDirectionElement);
 
-      // Populate speeches with the correct structure and classes
+      // Loop through the speeches and append them with correct structure.
       selectedScene.speeches.forEach(speech => {
          const speechElement = document.createElement('div');
-         speechElement.className = 'speech';
+         speechElement.className = 'speech'; // Add speech class for styling.
 
-         // Add the speaker name (span)
+         // Add speaker name (span).
          const speakerElement = document.createElement('span');
          speakerElement.textContent = speech.speaker;
          speechElement.appendChild(speakerElement);
 
-         // Add each line (p) inside the speech
+         // Loop through the lines and append them as paragraphs (p).
          speech.lines.forEach(line => {
             const lineElement = document.createElement('p');
             lineElement.textContent = line;
             speechElement.appendChild(lineElement);
          });
 
-         sceneElement.appendChild(speechElement);
+         sceneElement.appendChild(speechElement); // Append the speech to the scene.
       });
    }
 
-   // Highlight search term and filter speeches by player
+   // Add event listener to the highlight button to filter and highlight speeches.
    btnHighlight.addEventListener('click', function() {
-      const searchTerm = txtHighlight.value.trim().toLowerCase();
-      const selectedPlayer = playerList.value;
+      const searchTerm = txtHighlight.value.trim().toLowerCase(); // Get the search term.
+      const selectedPlayer = playerList.value; // Get the selected player.
 
-      // Clear previous highlights
-      clearHighlights();
+      clearHighlights(); // Clear any previous highlights.
 
-      // Filter speeches and highlight search term
-      const speeches = document.querySelectorAll('.speech');
+      const speeches = document.querySelectorAll('.speech'); // Get all speech elements.
+
+      // Loop through each speech to filter by player and highlight search term.
       speeches.forEach(speech => {
-            const speaker = speech.querySelector('span').textContent;
-            const lines = speech.querySelectorAll('p');
+         const speaker = speech.querySelector('span').textContent; // Get the speaker's name.
+         const lines = speech.querySelectorAll('p'); // Get all the lines in the speech.
 
-            // Show/hide speeches based on player selection
-            if (selectedPlayer !== "0" && speaker !== selectedPlayer) {
-               speech.style.display = 'none'; // Hide if not the selected player
-            } else {
-               speech.style.display = ''; // Show if it matches
-            }
+         if (selectedPlayer !== "0" && speaker !== selectedPlayer) {
+            speech.style.display = 'none'; // Hide speeches that don't match the selected player.
+         } else {
+            speech.style.display = ''; // Show speeches that match the selected player.
+         }
 
-            // Highlight search term in the lines
-            if (searchTerm) {
-               lines.forEach(line => {
-                  const innerHTML = line.innerHTML;
-                  const regex = new RegExp(`(${searchTerm})`, 'gi');
-                  line.innerHTML = innerHTML.replace(regex, '<b>$1</b>'); // Wrap found terms in <b>
-               });
-            }
+         // Highlight search term in the lines.
+         if (searchTerm) {
+            lines.forEach(line => {
+               const innerHTML = line.innerHTML; // Get the line's inner HTML.
+               const regex = new RegExp(`(${searchTerm})`, 'gi'); // Create a regex for the search term.
+               line.innerHTML = innerHTML.replace(regex, '<b>$1</b>'); // Wrap matching terms in <b> tags.
+            });
+         }
       });
    });
 
-   // Clear previous highlights
+   // Function to clear any previous highlights.
    function clearHighlights() {
-      const lines = document.querySelectorAll('.speech p');
+      const lines = document.querySelectorAll('.speech p'); // Get all speech lines.
       lines.forEach(line => {
-            // Remove <b> tags by replacing them with their content
-            line.innerHTML = line.innerHTML.replace(/<b>(.*?)<\/b>/g, '$1');
+         line.innerHTML = line.innerHTML.replace(/<b>(.*?)<\/b>/g, '$1'); // Remove <b> tags by replacing them with their content.
       });
    }
-   /*
-     To get a specific play, add play name via query string, 
-	   e.g., url = url + '?name=hamlet';
-	 
-	 https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=hamlet
-	 https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=jcaesar
-     
-   */
-	 
-   
-    /* note: you may get a CORS error if you test this locally (i.e., directly from a
-       local file). To work correctly, this needs to be tested on a local web server.  
-       Some possibilities: if using Visual Code, use Live Server extension; if Brackets,
-       use built-in Live Preview.
-    */
 });
