@@ -94,3 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     })
 });
+//help from Michelle and Nathaniel
+//https://stackoverflow.com/questions/52743841/find-and-highlight-word-in-text-using-js
+//ChatGPT
