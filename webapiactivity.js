@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	let play = null;
 
-	// Event listener for selecting a play
+	//event listener for selecting a play
 	document.querySelector('#playList').addEventListener('change', async function () {
 		const selectedPlay = this.value;
 		console.log(`Play selected: ${selectedPlay}`);
@@ -23,42 +23,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				const playData = await response.json();
 				play = new Play(playData);
-				displayPlayTitle(play.title);  // Display the play title
-				displayPlayData(play);         // Populate acts and scenes
+				//display play title
+				displayPlayTitle(play.title); 
+				//displays acts and scenes
+				displayPlayData(play);
 			} catch (error) {
 				console.error('Error fetching play data:', error);
 			}
 		}
 	});
 
-	// Function to display the play title
+	//function to display the play title
 	function displayPlayTitle(title) {
 		const titleElement = document.querySelector('#playTitle');
 		titleElement.textContent = title;
 	}
 
-	// Event listener for selecting an act
+	//event listener for selecting an act
 	document.querySelector('#actList').addEventListener('change', function () {
 		const selectedActIndex = this.value;
 		if (play && play.acts[selectedActIndex]) {
 			const selectedAct = play.acts[selectedActIndex];
-			displayActScene(selectedAct);     // Display the selected act's first scene
-			populateSceneDropdown(selectedAct);  // Populate scenes for the selected act
+			//display the selected act's first scene
+			displayActScene(selectedAct); 
+			populateSceneDropdown(selectedAct);
 		}
 	});
 
-	// Event listener for selecting a scene
+	//event listener for selecting a scene
 	document.querySelector('#sceneList').addEventListener('change', function () {
 		const selectedActIndex = document.querySelector('#actList').value;
 		const selectedSceneIndex = this.value;
 		if (play && play.acts[selectedActIndex] && play.acts[selectedActIndex].scenes[selectedSceneIndex]) {
 			const selectedScene = play.acts[selectedActIndex].scenes[selectedSceneIndex];
-			displayScene(selectedScene);        // Display the selected scene
-			populatePlayerDropdown(selectedScene);  // Populate players in the selected scene
+			//display the selected scene
+			displayScene(selectedScene);
+			//populate players in the selected scene
+			populatePlayerDropdown(selectedScene); 
 		}
 	});
 
-	// Event listener for the filter button (highlighting search terms)
+	//event listener for the filter button (highlighting search terms)
 	document.querySelector('#btnHighlight').addEventListener('click', function () {
 		const selectedActIndex = document.querySelector('#actList').value;
 		const selectedSceneIndex = document.querySelector('#sceneList').value;
@@ -67,11 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		if (play && play.acts[selectedActIndex] && play.acts[selectedActIndex].scenes[selectedSceneIndex]) {
 			const selectedScene = play.acts[selectedActIndex].scenes[selectedSceneIndex];
-			highlightSpeeches(selectedScene, searchTerm, selectedPlayer);  // Highlight speeches based on player and search term
+			 //highlights speeches based on player and search term
+			highlightSpeeches(selectedScene, searchTerm, selectedPlayer);
 		}
 	});
 
-	// Function to display the list of acts in a play
+	//function to display the list of acts in a play
 	function displayPlayData(play) {
 		const actList = document.querySelector('#actList');
 		actList.innerHTML = '';
@@ -83,12 +89,13 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 
 		if (play.acts[0]) {
-			displayActScene(play.acts[0]);     // Display the first act by default
-			populateSceneDropdown(play.acts[0]);  // Populate the scenes for the first act
+			//display first act and scene by default
+			displayActScene(play.acts[0]);  
+			populateSceneDropdown(play.acts[0]); 
 		}
 	}
 
-	// Function to populate the scene dropdown for a selected act
+	//function to populate the scene dropdown for a selected act
 	function populateSceneDropdown(act) {
 		const sceneList = document.querySelector('#sceneList');
 		sceneList.innerHTML = '';
@@ -100,12 +107,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 
 		if (act.scenes[0]) {
-			displayScene(act.scenes[0]);        // Display the first scene by default
-			populatePlayerDropdown(act.scenes[0]);  // Populate the players for the first scene
+			//display the first scene by default
+			displayScene(act.scenes[0]);
+			//populate players for the first scene
+			populatePlayerDropdown(act.scenes[0]); 
 		}
 	}
 
-	// Function to populate the player dropdown for a selected scene
+	//function to populate the player dropdown for a selected scene
 	function populatePlayerDropdown(scene) {
 		const playerList = document.querySelector('#playerList');
 		playerList.innerHTML = '';
@@ -124,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Function to display the first scene in the selected act
+	//function to display the first scene in the selected act
 	function displayActScene(act) {
 		const actHere = document.querySelector('#actHere');
 		const sceneHere = document.querySelector('#sceneHere');
@@ -149,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// Function to display the selected scene
+	//function to display the selected scene
 	function displayScene(scene) {
 		const sceneHere = document.querySelector('#sceneHere');
 		sceneHere.innerHTML = '';
@@ -168,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Function to highlight speeches in a scene based on search term and player
+	//unfction to highlight speeches in a scene based on search term and player
 	function highlightSpeeches(scene, searchTerm, selectedPlayer) {
 		const sceneHere = document.querySelector('#sceneHere');
 		sceneHere.innerHTML = '';
