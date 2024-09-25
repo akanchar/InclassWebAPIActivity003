@@ -1,31 +1,23 @@
-class Play {
-    constructor(data) {
-        this.Playtitle = data.title;
-        this.acts = data.acts.map(actData => new Act(actData));
-    }
-
-    returnPlay() {
-        return `<h2>${this.Playtitle}</h2>`;
+export class Play {
+    constructor(playData) {
+        this.title = playData.title;
+        this.short = playData.short;
+        this.acts = playData.acts.map(actData => new Act(actData));
     }
 }
 
-class Act {
-    constructor(data) {
-        this.Actname = data.name;
-        this.scenes = data.scenes.map(sceneData => new Scene(sceneData));
-    }
-
-    returnAct() {
-        return `<h3>${this.Actname}</h3>`;
+export class Act {
+    constructor(actData) {
+        this.name = actData.name;
+        this.scenes = actData.scenes.map(sceneData => new Scene(sceneData));
     }
 }
 
-class Scene {
-    constructor(data) {
-        this.Scenename = data.name;
-    }
-
-    returnScene() {
-        return `<h4>${this.Scenename}</h4>`;
+export class Scene {
+    constructor(sceneData) {
+        this.name = sceneData.name;
+        this.title = sceneData.title;
+        this.stageDirection = sceneData.stageDirection;
+        this.speeches = sceneData.speeches;
     }
 }
