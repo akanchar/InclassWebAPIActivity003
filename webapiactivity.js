@@ -5,14 +5,16 @@ document.addEventListener("DOMContentLoaded", function() {
    const playList = document.getElementById('playList');
    const actList = document.getElementById('actList');
    const sceneList = document.getElementById('sceneList');
- 
+   const playerList = docuemnt.getElementById('playerList');
+   const playHere = document.getElementById('playHere');
+   
    // Add event listener to playlist dropdown
    playList.addEventListener('change', function() {
       const selectedPlay = playList.value;
       if (selectedPlay === "hamlet") {
          fetchPlayData('hamlet.json');
-      } else if (selectedPlay === "jceaser") {
-         fetchPlayData('jceaser.json');
+      } else if (selectedPlay === "jcaesar") {
+         fetchPlayData('jcaesar.json');
       }
    });
 
@@ -23,7 +25,8 @@ document.addEventListener("DOMContentLoaded", function() {
          .then(data => {
             console.log(data);
             populateActs(data);
-         })
+            populatePlayers(data.persona);
+      })
          .catch(err => console.error('Error fetching play data:', err));
    }
 
@@ -53,6 +56,19 @@ document.addEventListener("DOMContentLoaded", function() {
          option.value = index;
          option.textContent = scene.name;
          sceneList.appendChild(option);
+      });
+   }
+
+   // Populate the player list based on the persona data
+   function populatePlayers(personaData) {
+      playerList.innerHTML = '<option value=0>All Players</option>'; // Reset player list
+
+      // Populate players
+      personaData.forEach(person => {
+         const option = document.createElement('option');
+         option.value = person.player;
+         option.textContent = `${person.player} (${person.desc})`;
+         playerList.appendChild(option);
       });
    }
    /*
